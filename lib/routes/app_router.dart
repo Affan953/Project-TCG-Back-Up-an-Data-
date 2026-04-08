@@ -1,0 +1,64 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:tcg_pokemon/pages/error_page.dart';
+import 'package:tcg_pokemon/pages/login_pokemon.dart';
+import 'package:tcg_pokemon/pages/register_pokemon.dart';
+import 'package:tcg_pokemon/pages/loading_pokemon.dart';
+import 'package:tcg_pokemon/providers/auth_provider.dart';
+import 'package:tcg_pokemon/routes/app_routes.dart';
+
+bool hasShownLoading = false;
+
+final GoRouter appRouter = GoRouter(
+  initialLocation: AppRoutes.loadingPath,
+  errorBuilder: (context, state) =>
+    const ErrorPage(), // Halaman error untuk route yang tidak ditemukan
+  redirect: (context, state) {
+    // Cek status login
+    final authProvider = context.read<AuthProvider>();
+    final isLoggedIn = authProvider.isLoggedIn;
+    final isGoingToLogin = state.matchedLocation == AppRoutes.loginPath;
+    final isGoingToRegister = state.matchedLocation == AppRoutes.registerPath;
+    final isGoingToLoading = state.matchedLocation == AppRoutes.loadingPath;
+
+    // Force loading screen if it hasn't been shown in this session
+    if (!hasShownLoading && !isGoingToLoading) {
+      return '${AppRoutes.loadingPath}?redirect=${state.matchedLocation}';
+    }
+
+    // Jika belum login dan mencoba akses halaman proteksi, arahkan ke login
+    if (!isLoggedIn && !isGoingToLogin && !isGoingToRegister && !isGoingToLoading) {
+      return AppRoutes.loginPath;
+    }
+
+    // Jika sudah login dan mencoba akses login/register, arahkan ke home
+
+    return null;
+  },
+  routes: [
+    GoRoute(
+      name: AppRoutes.loginName,
+      path: AppRoutes.loginPath,
+      builder: (context, state) {
+        return const PokemonTcgLoginApp();
+      }
+    ),
+    GoRoute(
+      name: AppRoutes.registerName,
+      path: AppRoutes.registerPath,
+      builder: (context, state) {
+        return const PokemonTcgRegisterApp();
+      }
+    ),
+    GoRoute(
+      name: AppRoutes.loadingName,
+      path: AppRoutes.loadingPath,
+      builder: (context, state) {
+        return const LoadingPokemon();
+      }
+    ),
+  ],
+);
+
+// Ini Yang Dikumpulkan
