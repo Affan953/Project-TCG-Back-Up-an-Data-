@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:tcg_pokemon/providers/auth_provider.dart';
 import 'package:tcg_pokemon/routes/app_routes.dart';
 import 'package:tcg_pokemon/routes/app_router.dart';
 
@@ -22,7 +24,13 @@ class _LoadingPokemonState extends State<LoadingPokemon> {
   @override
   void initState() {
     super.initState();
+    _tryAutoLogin();
     _startLoading();
+  }
+
+  Future<void> _tryAutoLogin() async {
+    final authProvider = context.read<AuthProvider>();
+    await authProvider.tryAutoLogin();
   }
 
   void _startLoading() {
@@ -38,8 +46,11 @@ class _LoadingPokemonState extends State<LoadingPokemon> {
           // Mark as shown
           hasShownLoading = true;
 
-          // Get redirect location if any
-          final redirectLocation = GoRouterState.of(context).uri.queryParameters['redirect'] ?? AppRoutes.loginPath;
+          // Check if user is logged in
+          final authProvider = context.read<AuthProvider>();
+          final redirectLocation = authProvider.isLoggedIn 
+            ? AppRoutes.homePath 
+            : (GoRouterState.of(context).uri.queryParameters['redirect'] ?? AppRoutes.loginPath);
 
           // Navigate after short delay
           Future.delayed(const Duration(seconds: 1), () {
