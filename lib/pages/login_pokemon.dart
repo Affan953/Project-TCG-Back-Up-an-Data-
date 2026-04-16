@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:provider/provider.dart';
+import 'package:tcg_pokemon/providers/auth_provider.dart';
 import 'package:tcg_pokemon/routes/app_routes.dart';
 import 'package:tcg_pokemon/widgets/glass_card.dart';
 import 'package:tcg_pokemon/widgets/pikachu_character.dart';
@@ -29,6 +31,7 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
   PikachuState _pikachuState = PikachuState.idle;
   bool _isPasswordVisible = false;
   bool _hasEmailText = false;
+  bool _isLoggingIn = false;
 
   @override
   void initState() {
@@ -61,6 +64,57 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
     _typingDebounce = Timer(const Duration(milliseconds: 350), () {
       _pikachuKey.currentState?.triggerLightning();
     });
+  }
+
+  Future<void> _handleLogin() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Harap isi email dan password!'),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isLoggingIn = true);
+
+    final authProvider = context.read<AuthProvider>();
+    final success = await authProvider.login(
+      email: email,
+      password: password,
+    );
+
+    if (!mounted) return;
+
+    setState(() => _isLoggingIn = false);
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Login berhasil! 🎉'),
+          backgroundColor: Colors.green.shade700,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+      // Navigate to home page
+      context.go(AppRoutes.homePath);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authProvider.errorMessage ?? 'Login gagal!'),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }
   }
 
   @override
@@ -269,9 +323,7 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
         ],
       ),
       child: ElevatedButton(
-        onPressed: () {
-          print('Login with: ${_emailController.text}');
-        },
+        onPressed: _isLoggingIn ? null : _handleLogin,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
@@ -282,13 +334,23 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Text(
-              'Start Your Journey',
-              style: PokemonTextStyles.inter(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
+            if (_isLoggingIn)
+              const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2.5,
+                ),
+              )
+            else
+              Text(
+                'Start Your Journey',
+                style: PokemonTextStyles.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
             // Subtle shimmer effect
             Positioned.fill(
               child: Container()
@@ -363,7 +425,7 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
           style: PokemonTextStyles.inter(color: Colors.white.withOpacity(0.7)),
         ),
         GestureDetector(
-          onTap: () => context.push(AppRoutes.registerPath),
+          onTap: () => context.go(AppRoutes.registerPath),
           child: Text(
             'Create Account',
             style: PokemonTextStyles.inter(

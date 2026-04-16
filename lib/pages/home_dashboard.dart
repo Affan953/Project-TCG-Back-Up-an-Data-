@@ -1,4 +1,3 @@
-// lib/main.dart - Copy paste seluruh kode ini dan jalankan
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

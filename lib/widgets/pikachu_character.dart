@@ -140,7 +140,6 @@ class _SmoothPikachu extends StatelessWidget {
           ..translate(0.0, 20.0)
           ..scale(0.85, 0.85);
       case PikachuState.idle:
-      default:
         return Matrix4.identity();
     }
   }

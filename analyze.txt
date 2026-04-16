@@ -1,0 +1,237 @@
+﻿Analyzing Project-TCG-Back-Up-an-Data-...                       
+
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\cards_page.dart:219:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\cards_page.dart:251:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\cards_page.dart:256:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\cards_page.dart:332:57 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\cards_page.dart:378:55 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\cards_page.dart:450:57 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\cards_page.dart:525:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\cards_page.dart:562:43 - deprecated_member_use
+   info - The 'child' argument should be last in widget constructor invocations - lib\pages\cards_page.dart:596:23 - sort_child_properties_last
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\cards_page.dart:598:55 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\favorites_page.dart:112:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\favorites_page.dart:192:57 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\favorites_page.dart:230:57 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\favorites_page.dart:246:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\favorites_page.dart:326:65 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\favorites_page.dart:396:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\favorites_page.dart:433:43 - deprecated_member_use
+   info - The 'child' argument should be last in widget constructor invocations - lib\pages\favorites_page.dart:457:23 - sort_child_properties_last
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\favorites_page.dart:459:55 - deprecated_member_use
+  error - The name 'HomeScreen' isn't a type, so it can't be used as a type argument - lib\pages\home_dashboard.dart:12:9 - non_type_as_type_argument
+  error - 'HomeScreen.createState' ('State<dynamic> Function()') isn't a valid override of 'StatefulWidget.createState' ('State<StatefulWidget> Function()') - lib\pages\home_dashboard.dart:12:21 - invalid_override
+  error - The name 'HomeScreen' isn't a type, so it can't be used as a type argument - lib\pages\home_dashboard.dart:15:38 - non_type_as_type_argument
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard.dart:40:28 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard.dart:41:28 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard.dart:72:45 - deprecated_member_use
+   info - An uninitialized variable should have an explicit type annotation - lib\pages\home_dashboard.dart:81:9 - prefer_typing_uninitialized_variables
+  error - Expected to find ';' - lib\pages\home_dashboard.dart:81:9 - expected_token
+  error - Variables must be declared using the keywords 'const', 'final', 'var' or a type name - lib\pages\home_dashboard.dart:81:9 - missing_const_final_var_or_type
+  error - Expected a method, getter, setter or operator declaration - lib\pages\home_dashboard.dart:81:18 - expected_executable
+   info - The variable name 'CardThemeData' isn't a lowerCamelCase identifier - lib\pages\home_dashboard.dart:81:20 - non_constant_identifier_names
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - lib\pages\home_dashboard.dart:82:20 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - lib\pages\home_dashboard.dart:82:20 - obsolete_colon_for_default_value
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - lib\pages\home_dashboard.dart:83:16 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - lib\pages\home_dashboard.dart:83:16 - obsolete_colon_for_default_value
+  error - The default value of an optional parameter must be constant - lib\pages\home_dashboard.dart:83:18 - non_constant_default_value
+  error - A function body must be provided - lib\pages\home_dashboard.dart:84:10 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - lib\pages\home_dashboard.dart:84:10 - expected_executable
+  error - Expected a method, getter, setter or operator declaration - lib\pages\home_dashboard.dart:85:7 - expected_executable
+  error - Expected a method, getter, setter or operator declaration - lib\pages\home_dashboard.dart:85:8 - expected_executable
+   info - An uninitialized variable should have an explicit type annotation - lib\pages\home_dashboard.dart:86:7 - prefer_typing_uninitialized_variables
+  error - Expected to find ';' - lib\pages\home_dashboard.dart:86:7 - expected_token
+  error - Variables must be declared using the keywords 'const', 'final', 'var' or a type name - lib\pages\home_dashboard.dart:86:7 - missing_const_final_var_or_type
+  error - Expected a method, getter, setter or operator declaration - lib\pages\home_dashboard.dart:86:16 - expected_executable
+   info - The variable name 'ThemeData' isn't a lowerCamelCase identifier - lib\pages\home_dashboard.dart:86:18 - non_constant_identifier_names
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - lib\pages\home_dashboard.dart:87:21 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - lib\pages\home_dashboard.dart:87:21 - obsolete_colon_for_default_value
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - lib\pages\home_dashboard.dart:88:19 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - lib\pages\home_dashboard.dart:88:19 - obsolete_colon_for_default_value
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - lib\pages\home_dashboard.dart:89:21 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - lib\pages\home_dashboard.dart:89:21 - obsolete_colon_for_default_value
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - lib\pages\home_dashboard.dart:90:32 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - lib\pages\home_dashboard.dart:90:32 - obsolete_colon_for_default_value
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - lib\pages\home_dashboard.dart:91:20 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - lib\pages\home_dashboard.dart:91:20 - obsolete_colon_for_default_value
+   info - 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\pages\home_dashboard.dart:95:11 - deprecated_member_use
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - lib\pages\home_dashboard.dart:97:18 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - lib\pages\home_dashboard.dart:97:18 - obsolete_colon_for_default_value
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:97:20 - undefined_identifier
+  error - The method 'dark' isn't defined for the type 'Function' - lib\pages\home_dashboard.dart:97:59 - undefined_method
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - lib\pages\home_dashboard.dart:98:20 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - lib\pages\home_dashboard.dart:98:20 - obsolete_colon_for_default_value
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - lib\pages\home_dashboard.dart:103:18 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - lib\pages\home_dashboard.dart:103:18 - obsolete_colon_for_default_value
+  error - Methods can't be invoked in constant expressions - lib\pages\home_dashboard.dart:103:20 - const_eval_method_invocation
+  error - A function body must be provided - lib\pages\home_dashboard.dart:107:8 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - lib\pages\home_dashboard.dart:107:8 - expected_executable
+   info - An uninitialized variable should have an explicit type annotation - lib\pages\home_dashboard.dart:108:7 - prefer_typing_uninitialized_variables
+  error - Expected to find ';' - lib\pages\home_dashboard.dart:108:7 - expected_token
+  error - Variables must be declared using the keywords 'const', 'final', 'var' or a type name - lib\pages\home_dashboard.dart:108:7 - missing_const_final_var_or_type
+  error - Expected a method, getter, setter or operator declaration - lib\pages\home_dashboard.dart:108:16 - expected_executable
+   info - The variable name 'ThemeMode' isn't a lowerCamelCase identifier - lib\pages\home_dashboard.dart:108:18 - non_constant_identifier_names
+  error - Functions must have an explicit list of parameters - lib\pages\home_dashboard.dart:108:18 - missing_function_parameters
+  error - A function body must be provided - lib\pages\home_dashboard.dart:108:27 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - lib\pages\home_dashboard.dart:108:27 - expected_executable
+   info - An uninitialized variable should have an explicit type annotation - lib\pages\home_dashboard.dart:108:28 - prefer_typing_uninitialized_variables
+  error - Variables must be declared using the keywords 'const', 'final', 'var' or a type name - lib\pages\home_dashboard.dart:108:28 - missing_const_final_var_or_type
+   info - An uninitialized variable should have an explicit type annotation - lib\pages\home_dashboard.dart:109:7 - prefer_typing_uninitialized_variables
+  error - Expected to find ';' - lib\pages\home_dashboard.dart:109:7 - expected_token
+  error - Expected a method, getter, setter or operator declaration - lib\pages\home_dashboard.dart:109:11 - expected_executable
+  error - Can't have modifier 'const' here - lib\pages\home_dashboard.dart:109:13 - extraneous_modifier
+   info - The variable name 'HomeScreen' isn't a lowerCamelCase identifier - lib\pages\home_dashboard.dart:109:19 - non_constant_identifier_names
+  error - The name 'HomeScreen' is already defined - lib\pages\home_dashboard.dart:109:19 - duplicate_definition
+  error - A function body must be provided - lib\pages\home_dashboard.dart:109:31 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - lib\pages\home_dashboard.dart:109:31 - expected_executable
+  error - Expected a method, getter, setter or operator declaration - lib\pages\home_dashboard.dart:110:5 - expected_executable
+  error - Unexpected text ';' - lib\pages\home_dashboard.dart:110:6 - unexpected_token
+  error - Expected a method, getter, setter or operator declaration - lib\pages\home_dashboard.dart:111:3 - expected_executable
+  error - Expected a method, getter, setter or operator declaration - lib\pages\home_dashboard.dart:112:1 - expected_executable
+  error - The name 'HomeScreen' is already defined - lib\pages\home_dashboard.dart:114:7 - duplicate_definition
+  error - The name 'HomeScreen' isn't a type, so it can't be used as a type argument - lib\pages\home_dashboard.dart:118:9 - non_type_as_type_argument
+  error - 'HomeScreen.createState' ('State<dynamic> Function()') isn't a valid override of 'StatefulWidget.createState' ('State<StatefulWidget> Function()') - lib\pages\home_dashboard.dart:118:21 - invalid_override
+warning - The declaration '_HomeScreenState' isn't referenced - lib\pages\home_dashboard.dart:121:7 - unused_element
+  error - The name '_HomeScreenState' is already defined - lib\pages\home_dashboard.dart:121:7 - duplicate_definition
+  error - The name 'HomeScreen' isn't a type, so it can't be used as a type argument - lib\pages\home_dashboard.dart:121:38 - non_type_as_type_argument
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard.dart:146:28 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard.dart:147:28 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard.dart:178:45 - deprecated_member_use
+  error - Undefined name 'SharedPreferences' - lib\pages\home_dashboard.dart:235:27 - undefined_identifier
+  error - Undefined name 'http' - lib\pages\home_dashboard.dart:243:30 - undefined_identifier
+  error - Undefined name 'json' - lib\pages\home_dashboard.dart:249:37 - undefined_identifier
+warning - The declaration '_hasMore' isn't referenced - lib\pages\home_dashboard.dart:314:12 - unused_element
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:330:45 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:332:20 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:345:44 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:359:44 - undefined_identifier
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard.dart:382:55 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard.dart:383:55 - deprecated_member_use
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:425:20 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:479:28 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:488:28 - undefined_identifier
+   info - 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre - lib\pages\home_dashboard.dart:516:21 - deprecated_member_use
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:533:16 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:539:55 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:589:26 - undefined_identifier
+   info - Unnecessary use of string interpolation - lib\pages\home_dashboard.dart:592:19 - unnecessary_string_interpolations
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:593:26 - undefined_identifier
+warning - Dead code - lib\pages\home_dashboard.dart:666:40 - dead_code
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard.dart:693:62 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard.dart:720:55 - deprecated_member_use
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:750:38 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:760:38 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:772:42 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:827:20 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:832:20 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:839:45 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:863:20 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:868:20 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:879:48 - undefined_identifier
+  error - ThemeData isn't a type - lib\pages\home_dashboard.dart:906:3 - not_a_type
+   info - 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\pages\home_dashboard.dart:916:9 - deprecated_member_use
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:918:18 - undefined_identifier
+  error - ThemeData isn't a type - lib\pages\home_dashboard.dart:931:3 - not_a_type
+   info - 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\pages\home_dashboard.dart:941:9 - deprecated_member_use
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:943:18 - undefined_identifier
+  error - The method 'dark' isn't defined for the type 'Function' - lib\pages\home_dashboard.dart:943:57 - undefined_method
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:1074:18 - undefined_identifier
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard.dart:1098:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard.dart:1099:52 - deprecated_member_use
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:1118:30 - undefined_identifier
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard.dart:1128:56 - deprecated_member_use
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:1133:32 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:1152:38 - undefined_identifier
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard.dart:1165:57 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard.dart:1194:33 - deprecated_member_use
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:1206:20 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:1214:20 - undefined_identifier
+  error - Undefined name 'GoogleFonts' - lib\pages\home_dashboard.dart:1227:12 - undefined_identifier
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard_content.dart:128:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard_content.dart:155:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard_content.dart:160:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard_content.dart:331:57 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard_content.dart:377:55 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard_content.dart:435:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard_content.dart:443:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\home_dashboard_content.dart:451:53 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\loading_pokemon.dart:170:50 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\loading_pokemon.dart:251:50 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\login_pokemon.dart:239:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\login_pokemon.dart:254:29 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\login_pokemon.dart:258:31 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\login_pokemon.dart:262:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\login_pokemon.dart:266:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\login_pokemon.dart:271:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\login_pokemon.dart:304:44 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\login_pokemon.dart:344:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\login_pokemon.dart:361:53 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\login_pokemon.dart:366:64 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\login_pokemon.dart:369:53 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\login_pokemon.dart:383:48 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\login_pokemon.dart:384:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\login_pokemon.dart:400:62 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\register_pokemon.dart:257:96 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\register_pokemon.dart:270:29 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\register_pokemon.dart:274:31 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\register_pokemon.dart:278:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\register_pokemon.dart:282:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\register_pokemon.dart:287:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\register_pokemon.dart:306:44 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\register_pokemon.dart:342:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\register_pokemon.dart:359:53 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\register_pokemon.dart:362:80 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\register_pokemon.dart:364:53 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\register_pokemon.dart:378:48 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\register_pokemon.dart:379:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\register_pokemon.dart:390:88 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\sets_page.dart:128:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\sets_page.dart:155:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\sets_page.dart:160:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\sets_page.dart:236:57 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\sets_page.dart:282:55 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\sets_page.dart:340:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\sets_page.dart:348:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\sets_page.dart:356:53 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\settings_page.dart:46:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\settings_page.dart:100:55 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\settings_page.dart:131:55 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\settings_page.dart:172:55 - deprecated_member_use
+   info - 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre - lib\pages\settings_page.dart:182:31 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\settings_page.dart:197:55 - deprecated_member_use
+   info - 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre - lib\pages\settings_page.dart:208:31 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\settings_page.dart:227:55 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\settings_page.dart:272:55 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\settings_page.dart:294:55 - deprecated_member_use
+   info - The 'child' argument should be last in widget constructor invocations - lib\pages\settings_page.dart:373:19 - sort_child_properties_last
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\settings_page.dart:396:35 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\settings_page.dart:506:41 - deprecated_member_use
+   info - The 'child' argument should be last in widget constructor invocations - lib\pages\settings_page.dart:514:19 - sort_child_properties_last
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\settings_page.dart:557:41 - deprecated_member_use
+   info - The 'child' argument should be last in widget constructor invocations - lib\pages\settings_page.dart:568:23 - sort_child_properties_last
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\settings_page.dart:570:55 - deprecated_member_use
+   info - The 'child' argument should be last in widget constructor invocations - lib\pages\settings_page.dart:582:23 - sort_child_properties_last
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\topup_page.dart:158:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\topup_page.dart:203:55 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\topup_page.dart:285:51 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\topup_page.dart:320:56 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\topup_page.dart:431:49 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\pages\topup_page.dart:457:35 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\providers\auth_provider.dart:55:5 - avoid_print
+   info - Don't invoke 'print' in production code - lib\providers\auth_provider.dart:56:5 - avoid_print
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\widgets\glass_card.dart:28:35 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\widgets\glass_card.dart:49:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\widgets\glass_card.dart:52:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\widgets\glass_card.dart:70:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\widgets\glass_card.dart:71:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\widgets\glass_card.dart:72:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\widgets\glass_card.dart:90:42 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\widgets\glass_card.dart:92:42 - deprecated_member_use
+   info - 'translate' is deprecated and shouldn't be used. Use translateByVector3, translateByVector4, or translateByDouble instead - lib\widgets\pikachu_character.dart:134:13 - deprecated_member_use
+   info - 'translate' is deprecated and shouldn't be used. Use translateByVector3, translateByVector4, or translateByDouble instead - lib\widgets\pikachu_character.dart:140:13 - deprecated_member_use
+   info - 'scale' is deprecated and shouldn't be used. Use scaleByVector3, scaleByVector4, or scaleByDouble instead - lib\widgets\pikachu_character.dart:141:13 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\widgets\pikachu_character.dart:162:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\widgets\pikachu_character.dart:163:37 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\widgets\pokemon_background.dart:87:24 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\widgets\pokemon_background.dart:91:28 - deprecated_member_use
+

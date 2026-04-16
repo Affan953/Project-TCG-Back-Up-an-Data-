@@ -37,6 +37,7 @@ class _PokemonTcgRegisterAppState extends State<PokemonTcgRegisterApp> {
   bool _isPasswordVisible = false;
   bool _isConfirmVisible = false;
   bool _hasSparkles = false;
+  bool _isRegistering = false;
 
   @override
   void initState() {
@@ -105,6 +106,72 @@ class _PokemonTcgRegisterAppState extends State<PokemonTcgRegisterApp> {
     );
   }
 
+  Future<void> _handleRegister() async {
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmController.text.trim();
+
+    if (name.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Harap isi semua field!'),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+      return;
+    }
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Password dan konfirmasi password tidak cocok!'),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isRegistering = true);
+
+    final authProvider = context.read<AuthProvider>();
+    final success = await authProvider.register(
+      name: name,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+    );
+
+    if (!mounted) return;
+
+    setState(() => _isRegistering = false);
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Registrasi berhasil! Silakan login. 🎉'),
+          backgroundColor: Colors.green.shade700,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+      // Navigate back to login
+      context.go(AppRoutes.loginPath);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(authProvider.errorMessage ?? 'Registrasi gagal!'),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }
+  }
   @override
   void dispose() {
     _typingDebounce?.cancel();
@@ -293,7 +360,7 @@ class _PokemonTcgRegisterAppState extends State<PokemonTcgRegisterApp> {
         ],
       ),
       child: ElevatedButton(
-        onPressed: isLoading ? null : () => _submitRegistration(context),
+        onPressed: _isRegistering ? null : _handleRegister,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
@@ -302,10 +369,20 @@ class _PokemonTcgRegisterAppState extends State<PokemonTcgRegisterApp> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Text(
-              'Begin Your Adventure',
-              style: PokemonTextStyles.inter(fontSize: 16, fontWeight: FontWeight.w700),
-            ),
+            if (_isRegistering)
+              const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2.5,
+                ),
+              )
+            else
+              Text(
+                'Begin Your Adventure',
+                style: PokemonTextStyles.inter(fontSize: 16, fontWeight: FontWeight.w700),
+              ),
             Positioned.fill(
               child: Container()
                   .animate(onPlay: (c) => c.repeat())
@@ -362,7 +439,7 @@ class _PokemonTcgRegisterAppState extends State<PokemonTcgRegisterApp> {
       children: [
         Text('Already a Trainer? ', style: PokemonTextStyles.inter(color: Colors.white.withOpacity(0.7))),
         GestureDetector(
-          onTap: () => context.pop(),
+          onTap: () => context.go(AppRoutes.loginPath),
           child: Text('Sign In', style: PokemonTextStyles.inter(color: const Color(0xFFfbbf24), fontWeight: FontWeight.w600)),
         ),
       ],
