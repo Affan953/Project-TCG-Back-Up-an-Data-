@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
@@ -18,11 +20,13 @@ class PokemonTcgLoginApp extends StatefulWidget {
 }
 
 class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
-  final GlobalKey<PikachuCharacterState> _pikachuKey = GlobalKey<PikachuCharacterState>();
+  final GlobalKey<PikachuCharacterState> _pikachuKey =
+      GlobalKey<PikachuCharacterState>();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  Timer? _typingDebounce;
 
   PikachuState _pikachuState = PikachuState.idle;
   bool _isPasswordVisible = false;
@@ -56,7 +60,10 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
   }
 
   void _handleKeyPress() {
-    _pikachuKey.currentState?.triggerLightning();
+    _typingDebounce?.cancel();
+    _typingDebounce = Timer(const Duration(milliseconds: 350), () {
+      _pikachuKey.currentState?.triggerLightning();
+    });
   }
 
   Future<void> _handleLogin() async {
@@ -112,6 +119,7 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
 
   @override
   void dispose() {
+    _typingDebounce?.cancel();
     _emailFocus.removeListener(_onFocusChange);
     _passwordFocus.removeListener(_onFocusChange);
     _emailController.removeListener(_onEmailChange);
@@ -195,10 +203,7 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
           ),
         ),
         const SizedBox(height: 12),
-        Text(
-          'Trainer Login Portal',
-          style: PokemonTextStyles.subtitle(),
-        ),
+        Text('Trainer Login Portal', style: PokemonTextStyles.subtitle()),
       ],
     );
   }
@@ -207,14 +212,17 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Email Address', style: PokemonTextStyles.inter(fontWeight: FontWeight.w400)),
+        Text(
+          'Username',
+          style: PokemonTextStyles.inter(fontWeight: FontWeight.w400),
+        ),
         const SizedBox(height: 8),
         TextField(
           controller: _emailController,
           focusNode: _emailFocus,
           onChanged: (_) => _handleKeyPress(),
           style: PokemonTextStyles.inter(fontSize: 16),
-          decoration: _inputDecoration('trainer@pokemon.com'),
+          decoration: _inputDecoration('trainer_username'),
         ),
       ],
     );
@@ -224,7 +232,10 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Password', style: PokemonTextStyles.inter(fontWeight: FontWeight.w400)),
+        Text(
+          'Password',
+          style: PokemonTextStyles.inter(fontWeight: FontWeight.w400),
+        ),
         const SizedBox(height: 8),
         TextField(
           controller: _passwordController,
@@ -239,7 +250,8 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
                 color: Colors.white.withOpacity(0.6),
                 size: 20,
               ),
-              onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
+              onPressed: () =>
+                  setState(() => _isPasswordVisible = !_isPasswordVisible),
             ),
           ),
         ),
@@ -282,7 +294,10 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
         onPressed: () {},
         child: Text(
           'Forgot Password?',
-          style: PokemonTextStyles.inter(color: const Color(0xFF93c5fd), fontSize: 14),
+          style: PokemonTextStyles.inter(
+            color: const Color(0xFF93c5fd),
+            fontSize: 14,
+          ),
         ),
       ),
     );
@@ -312,7 +327,9 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
         child: Stack(
           alignment: Alignment.center,
@@ -363,7 +380,10 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             'OR',
-            style: PokemonTextStyles.inter(color: Colors.white.withOpacity(0.6), fontSize: 14),
+            style: PokemonTextStyles.inter(
+              color: Colors.white.withOpacity(0.6),
+              fontSize: 14,
+            ),
           ),
         ),
         Expanded(child: Divider(color: Colors.white.withOpacity(0.2))),
@@ -379,13 +399,18 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
         onPressed: () {},
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           side: BorderSide(color: Colors.white.withOpacity(0.2)),
           backgroundColor: Colors.white.withOpacity(0.1),
         ),
         child: Text(
           'Continue with Google',
-          style: PokemonTextStyles.inter(fontSize: 14, fontWeight: FontWeight.w500),
+          style: PokemonTextStyles.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

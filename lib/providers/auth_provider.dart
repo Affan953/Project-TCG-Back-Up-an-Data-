@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tcg_pokemon/config/env.dart';
+import 'package:tcg_pokemon/models/user.dart';
 
 class AuthProvider extends ChangeNotifier {
   bool _isLoading = false;
