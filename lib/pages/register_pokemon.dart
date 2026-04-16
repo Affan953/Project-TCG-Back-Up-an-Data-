@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:provider/provider.dart';
+import 'package:tcg_pokemon/providers/auth_provider.dart';
 import 'package:tcg_pokemon/routes/app_routes.dart';
 import 'package:tcg_pokemon/widgets/glass_card.dart';
 import 'package:tcg_pokemon/widgets/pikachu_character.dart';
@@ -27,6 +31,7 @@ class _PokemonTcgRegisterAppState extends State<PokemonTcgRegisterApp> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
+  Timer? _typingDebounce;
 
   PikachuState _pikachuState = PikachuState.idle;
   bool _isPasswordVisible = false;
@@ -64,11 +69,45 @@ class _PokemonTcgRegisterAppState extends State<PokemonTcgRegisterApp> {
   }
 
   void _handleKeyPress() {
-    _pikachuKey.currentState?.triggerLightning();
+    _typingDebounce?.cancel();
+    _typingDebounce = Timer(const Duration(milliseconds: 350), () {
+      _pikachuKey.currentState?.triggerLightning();
+    });
+  }
+
+  Future<void> _submitRegistration(BuildContext context) async {
+    if (_nameController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _confirmController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Semua field harus diisi.')),
+      );
+      return;
+    }
+
+    final authProvider = context.read<AuthProvider>();
+    final success = await authProvider.register(
+      username: _nameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+      confirmPassword: _confirmController.text,
+    );
+
+    // if (success) {
+    //   context.goNamed(AppRoutes.loginName);
+    //   return;
+    // }
+
+    final message = authProvider.errorMessage ?? 'Registrasi gagal. Coba lagi.';
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
   void dispose() {
+    _typingDebounce?.cancel();
     _nameFocus.dispose();
     _emailFocus.dispose();
     _passwordFocus.dispose();
@@ -82,6 +121,8 @@ class _PokemonTcgRegisterAppState extends State<PokemonTcgRegisterApp> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+
     return Scaffold(
       body: PokemonBackground(
         child: SingleChildScrollView(
@@ -111,7 +152,18 @@ class _PokemonTcgRegisterAppState extends State<PokemonTcgRegisterApp> {
                           _buildPasswordField('Confirm Password', _confirmController, _confirmFocus, _isConfirmVisible, (v) => setState(() => _isConfirmVisible = v)),
                           
                           const SizedBox(height: 24),
-                          _buildPrimaryButton(),
+                          if (authProvider.errorMessage != null)
+                            Column(
+                              children: [
+                                Text(
+                                  authProvider.errorMessage!,
+                                  style: PokemonTextStyles.inter(color: Colors.redAccent, fontSize: 14),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 12),
+                              ],
+                            ),
+                          _buildPrimaryButton(authProvider.isLoading),
                           const SizedBox(height: 24),
                           _buildDivider(),
                           const SizedBox(height: 24),
@@ -222,7 +274,7 @@ class _PokemonTcgRegisterAppState extends State<PokemonTcgRegisterApp> {
     );
   }
 
-  Widget _buildPrimaryButton() {
+  Widget _buildPrimaryButton(bool isLoading) {
     return Container(
       height: 56,
       decoration: BoxDecoration(
@@ -241,7 +293,7 @@ class _PokemonTcgRegisterAppState extends State<PokemonTcgRegisterApp> {
         ],
       ),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: isLoading ? null : () => _submitRegistration(context),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,

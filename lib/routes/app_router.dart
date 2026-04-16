@@ -5,13 +5,14 @@ import 'package:tcg_pokemon/pages/error_page.dart';
 import 'package:tcg_pokemon/pages/login_pokemon.dart';
 import 'package:tcg_pokemon/pages/register_pokemon.dart';
 import 'package:tcg_pokemon/pages/loading_pokemon.dart';
+import 'package:tcg_pokemon/pages/home_dashboard.dart';
 import 'package:tcg_pokemon/providers/auth_provider.dart';
 import 'package:tcg_pokemon/routes/app_routes.dart';
 
 bool hasShownLoading = false;
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRoutes.loadingPath,
+  initialLocation: AppRoutes.homePath,
   errorBuilder: (context, state) =>
     const ErrorPage(), // Halaman error untuk route yang tidak ditemukan
   redirect: (context, state) {
@@ -28,9 +29,10 @@ final GoRouter appRouter = GoRouter(
     }
 
     // Jika belum login dan mencoba akses halaman proteksi, arahkan ke login
-    if (!isLoggedIn && !isGoingToLogin && !isGoingToRegister && !isGoingToLoading) {
-      return AppRoutes.loginPath;
-    }
+    // BYPASS LOGIN FOR TESTING
+    // if (!isLoggedIn && !isGoingToLogin && !isGoingToRegister && !isGoingToLoading) {
+    //   return AppRoutes.loginPath;
+    // }
 
     // Jika sudah login dan mencoba akses login/register, arahkan ke home
 
@@ -56,6 +58,13 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.loadingPath,
       builder: (context, state) {
         return const LoadingPokemon();
+      }
+    ),
+    GoRoute(
+      name: AppRoutes.homeName,
+      path: AppRoutes.homePath,
+      builder: (context, state) {
+        return const HomeScreen();
       }
     ),
   ],
