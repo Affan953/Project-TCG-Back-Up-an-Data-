@@ -97,7 +97,7 @@ class _PokemonTcgLoginAppState extends State<PokemonTcgLoginApp> {
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Login berhasil! 🎉'),
+          content: const Text('Login berhasil!'),
           backgroundColor: Colors.green.shade700,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

@@ -1,13 +1,17 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tcg_pokemon/routes/app_routes.dart';
 import 'package:tcg_pokemon/widgets/glass_card.dart';
+import 'package:tcg_pokemon/widgets/pikachu_character.dart';
 import 'package:tcg_pokemon/widgets/pokemon_background.dart';
 import 'package:tcg_pokemon/widgets/pokemon_text_styles.dart';
+import 'package:provider/provider.dart';
+import 'package:tcg_pokemon/providers/auth_provider.dart';
 
 class TopupPage extends StatefulWidget {
   const TopupPage({super.key});
@@ -18,11 +22,22 @@ class TopupPage extends StatefulWidget {
 
 class _TopupPageState extends State<TopupPage> {
   final TextEditingController _amountController = TextEditingController();
+  final GlobalKey<PikachuCharacterState> _pikachuKey = GlobalKey<PikachuCharacterState>();
   bool _isLoading = false;
   String _errorMessage = '';
   Map<String, dynamic>? _topupResult;
+  PikachuState _pikachuState = PikachuState.idle;
+  int? _selectedPreset;
 
   final List<int> _presetAmounts = [50000, 100000, 200000, 500000, 1000000];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AuthProvider>().fetchProfile();
+    });
+  }
 
   @override
   void dispose() {
@@ -33,24 +48,18 @@ class _TopupPageState extends State<TopupPage> {
   Future<void> _performTopup() async {
     final amountText = _amountController.text.trim();
     if (amountText.isEmpty) {
-      setState(() {
-        _errorMessage = 'Masukkan jumlah topup';
-      });
+      setState(() => _errorMessage = 'Masukkan jumlah topup');
       return;
     }
 
     final amount = int.tryParse(amountText);
     if (amount == null || amount <= 0) {
-      setState(() {
-        _errorMessage = 'Jumlah topup harus berupa angka positif';
-      });
+      setState(() => _errorMessage = 'Jumlah topup harus berupa angka positif');
       return;
     }
 
     if (amount < 10000) {
-      setState(() {
-        _errorMessage = 'Minimal topup Rp 10.000';
-      });
+      setState(() => _errorMessage = 'Minimal topup Rp 10.000');
       return;
     }
 
@@ -74,30 +83,33 @@ class _TopupPageState extends State<TopupPage> {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: jsonEncode({
-          'amount': amount,
-        }),
+        body: jsonEncode({'amount': amount}),
       );
 
       if (!mounted) return;
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-        setState(() {
-          _topupResult = responseData;
-        });
+        setState(() => _topupResult = responseData);
 
-        // Show success message
+        if (mounted) {
+          final newBalance = responseData['saldo_baru'] ?? 
+                             responseData['sisa_saldo'] ?? 
+                             responseData['balance'] ?? 0;
+          context.read<AuthProvider>().updateUserData({'saldo': newBalance});
+        }
+
+        _pikachuKey.currentState?.triggerLightning();
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               'Topup berhasil! Saldo baru: Rp ${_formatCurrency(_topupResult!['saldo_baru'])}',
+              style: PokemonTextStyles.inter(fontWeight: FontWeight.w600),
             ),
-            backgroundColor: Colors.green.shade700,
+            backgroundColor: const Color(0xFF10b981),
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           ),
         );
       } else {
@@ -105,28 +117,23 @@ class _TopupPageState extends State<TopupPage> {
         throw Exception(errorData['message'] ?? 'Topup gagal');
       }
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-        });
-      }
+      if (mounted) setState(() => _errorMessage = e.toString());
     } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
   void _selectPresetAmount(int amount) {
     _amountController.text = amount.toString();
+    _pikachuKey.currentState?.triggerLightning();
     setState(() {
+      _selectedPreset = amount;
       _errorMessage = '';
     });
   }
 
-  String _formatCurrency(int amount) {
+  String _formatCurrency(dynamic amount) {
+    if (amount == null) return '0';
     return amount.toString().replaceAllMapped(
       RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
       (Match m) => '${m[1]}.',
@@ -140,304 +147,99 @@ class _TopupPageState extends State<TopupPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        titleSpacing: 0,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Top Up Saldo',
-              style: PokemonTextStyles.brandLogo(
-                color: Colors.white,
-                fontSize: 22,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Tambah saldo untuk fitur premium',
-              style: PokemonTextStyles.inter(
-                color: Colors.white.withOpacity(0.8),
-                fontSize: 14,
-              ),
-            ),
-          ],
+        centerTitle: true,
+        title: Text(
+          'TRAINER WALLET',
+          style: PokemonTextStyles.brandLogo(color: Colors.white, fontSize: 18),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.home, color: Colors.white),
-            tooltip: 'Home',
-            onPressed: () => context.go(AppRoutes.homePath),
+            icon: const Icon(Icons.history_rounded, color: Colors.white, size: 24),
+            onPressed: () {},
+            tooltip: 'History',
           ),
-          IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white),
-            tooltip: 'Settings',
-            onPressed: () => context.go(AppRoutes.settingsPath),
-          ),
+          const SizedBox(width: 8),
         ],
       ),
       body: PokemonBackground(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 104),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Balance Card
-                      GlassCard(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            children: [
-                              const Icon(
-                                Icons.account_balance_wallet,
-                                color: Color(0xFFfbbf24),
-                                size: 48,
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'Saldo Saat Ini',
-                                style: PokemonTextStyles.inter(
-                                  color: Colors.white.withOpacity(0.8),
-                                  fontSize: 14,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                _topupResult != null
-                                  ? 'Rp ${_formatCurrency(_topupResult!['saldo_baru'])}'
-                                  : 'Rp 0',
-                                style: PokemonTextStyles.inter(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Preset Amounts
-                      Text(
-                        'Pilih Nominal Topup',
-                        style: PokemonTextStyles.inter(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          childAspectRatio: 2.5,
-                        ),
-                        itemCount: _presetAmounts.length,
-                        itemBuilder: (context, index) {
-                          final amount = _presetAmounts[index];
-                          return GestureDetector(
-                            onTap: () => _selectPresetAmount(amount),
-                            child: GlassCard(
-                              child: Center(
-                                child: Text(
-                                  'Rp ${_formatCurrency(amount)}',
-                                  style: PokemonTextStyles.inter(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Custom Amount Input
-                      Text(
-                        'Atau Masukkan Nominal Sendiri',
-                        style: PokemonTextStyles.inter(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      GlassCard(
-                        child: TextField(
-                          controller: _amountController,
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          decoration: InputDecoration(
-                            hintText: 'Masukkan jumlah (minimal Rp 10.000)',
-                            hintStyle: PokemonTextStyles.inter(
-                              color: Colors.white.withOpacity(0.6),
-                              fontSize: 16,
-                            ),
-                            prefixText: 'Rp ',
-                            prefixStyle: PokemonTextStyles.inter(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 16,
-                            ),
-                          ),
-                          style: PokemonTextStyles.inter(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                          onChanged: (value) {
-                            if (_errorMessage.isNotEmpty) {
-                              setState(() {
-                                _errorMessage = '';
-                              });
-                            }
-                          },
-                        ),
-                      ),
-
-                      // Error Message
-                      if (_errorMessage.isNotEmpty) ...[
-                        const SizedBox(height: 12),
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.red.shade900.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: Colors.red.shade400,
-                              width: 1,
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.error_outline,
-                                color: Colors.red.shade400,
-                                size: 20,
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  _errorMessage,
-                                  style: PokemonTextStyles.inter(
-                                    color: Colors.red.shade400,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-
-                      // Topup Result
-                      if (_topupResult != null) ...[
-                        const SizedBox(height: 24),
-                        GlassCard(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.check_circle,
-                                      color: Colors.green,
-                                      size: 24,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      'Topup Berhasil!',
-                                      style: PokemonTextStyles.inter(
-                                        color: Colors.green,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 16),
-                                _buildResultRow('Saldo Sebelumnya', 'Rp ${_formatCurrency(_topupResult!['saldo_sebelumnya'])}'),
-                                _buildResultRow('Jumlah Topup', 'Rp ${_formatCurrency(_topupResult!['topup_amount'])}'),
-                                const Divider(color: Colors.white24),
-                                _buildResultRow('Saldo Baru', 'Rp ${_formatCurrency(_topupResult!['saldo_baru'])}', isBold: true),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-
-                      const SizedBox(height: 32),
-
-                      // Topup Button
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: _isLoading ? null : _performTopup,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFfbbf24),
-                            foregroundColor: Colors.black,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 48,
-                              vertical: 16,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            disabledBackgroundColor: Colors.grey.shade600,
-                          ),
-                          child: _isLoading
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                                ),
-                              )
-                            : Text(
-                                'Top Up Sekarang',
-                                style: PokemonTextStyles.inter(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      // Info Text
-                      Center(
-                        child: Text(
-                          'Minimal topup Rp 10.000\nTopup akan langsung ditambahkan ke saldo Anda',
-                          style: PokemonTextStyles.inter(
-                            color: Colors.white.withOpacity(0.6),
-                            fontSize: 12,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
+              const SizedBox(height: 40),
+              
+              // Pikachu Mascot Interaction
+              Center(
+                child: GestureDetector(
+                  onTap: () => _pikachuKey.currentState?.triggerLightning(),
+                  child: PikachuCharacter(
+                    key: _pikachuKey,
+                    state: _pikachuState,
+                    hasText: _amountController.text.isNotEmpty,
                   ),
                 ),
+              ).animate().fadeIn(duration: 800.ms).slideY(begin: 0.1, end: 0),
+              
+              const SizedBox(height: 20),
+
+              // Wallet Card
+              _buildProfessionalWalletCard(),
+              
+              const SizedBox(height: 32),
+
+              Text(
+                'FAST RELOAD',
+                style: PokemonTextStyles.inter(
+                  color: const Color(0xFFfbbf24).withOpacity(0.8),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.5,
+                ),
               ),
+              const SizedBox(height: 16),
+              
+              // Preset Amounts Grid
+              GridView.builder(
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 2.2,
+                ),
+                itemCount: _presetAmounts.length,
+                itemBuilder: (context, index) => _buildPresetChip(_presetAmounts[index]),
+              ),
+
+              const SizedBox(height: 32),
+
+              Text(
+                'MANUAL AMOUNT',
+                style: PokemonTextStyles.inter(
+                  color: const Color(0xFFfbbf24).withOpacity(0.8),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              const SizedBox(height: 16),
+              _buildModernTextField(),
+
+              if (_errorMessage.isNotEmpty) _buildErrorMessage(),
+
+              const SizedBox(height: 32),
+              _buildConfirmButton(),
+
+              if (_topupResult != null) _buildDetailedReceipt(),
+
+              const SizedBox(height: 32),
+              _buildRecentActivityPreview(),
+              
+              const SizedBox(height: 60),
             ],
           ),
         ),
@@ -445,27 +247,307 @@ class _TopupPageState extends State<TopupPage> {
     );
   }
 
-  Widget _buildResultRow(String label, String value, {bool isBold = false}) {
+  Widget _buildProfessionalWalletCard() {
+    return Consumer<AuthProvider>(
+      builder: (context, auth, _) {
+        final balance = auth.userData?['saldo'] ?? auth.userData?['sisa_saldo'] ?? auth.userData?['balance'] ?? 0;
+        return Container(
+          width: double.infinity,
+          height: 200,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(28),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                const Color(0xFF1e3a8a).withOpacity(0.9),
+                const Color(0xFF1e293b).withOpacity(0.95),
+              ],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 15,
+                offset: const Offset(0, 10),
+              ),
+              BoxShadow(
+                color: const Color(0xFFfbbf24).withOpacity(0.1),
+                blurRadius: 20,
+                spreadRadius: -5,
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(28),
+            child: Stack(
+              children: [
+                // Abstract Mesh Pattern
+                Positioned(
+                  top: -50,
+                  right: -50,
+                  child: Container(
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xFFfbbf24).withOpacity(0.1),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: -20,
+                  left: -20,
+                  child: Icon(Icons.wallet, size: 100, color: Colors.white.withOpacity(0.03)),
+                ),
+                
+                // Card Content
+                Padding(
+                  padding: const EdgeInsets.all(28),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'TOTAL BALANCE',
+                                style: PokemonTextStyles.inter(
+                                  color: Colors.white60,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 2,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Rp ${_formatCurrency(balance)}',
+                                style: PokemonTextStyles.inter(
+                                  color: Colors.white,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFfbbf24).withOpacity(0.2),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.bolt_rounded, color: Color(0xFFfbbf24), size: 24),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'TRAINER NAME',
+                                style: PokemonTextStyles.inter(color: Colors.white30, fontSize: 8, fontWeight: FontWeight.w800),
+                              ),
+                              Text(
+                                auth.userData?['username']?.toUpperCase() ?? 'ASH KETCHUM',
+                                style: PokemonTextStyles.inter(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                          Image.network(
+                            'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png',
+                            height: 40,
+                            color: Colors.white.withOpacity(0.5),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ).animate().shimmer(duration: 3.seconds, color: Colors.white.withOpacity(0.05));
+      },
+    );
+  }
+
+  Widget _buildPresetChip(int amount) {
+    bool isSelected = _selectedPreset == amount;
+    return GestureDetector(
+      onTap: () => _selectPresetAmount(amount),
+      child: AnimatedContainer(
+        duration: 300.ms,
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFFfbbf24) : Colors.white.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected ? const Color(0xFFfbbf24) : Colors.white.withOpacity(0.1),
+            width: 1.5,
+          ),
+          boxShadow: isSelected ? [
+            BoxShadow(color: const Color(0xFFfbbf24).withOpacity(0.3), blurRadius: 10, spreadRadius: -2)
+          ] : [],
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          '${_formatCurrency(amount / 1000).split('.')[0]}K',
+          style: PokemonTextStyles.inter(
+            color: isSelected ? Colors.black : Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModernTextField() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.04),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withOpacity(0.08)),
+      ),
+      child: TextField(
+        controller: _amountController,
+        keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        onChanged: (val) {
+          setState(() {
+            _selectedPreset = null;
+            _pikachuState = val.isNotEmpty ? PikachuState.typingEmail : PikachuState.idle;
+          });
+        },
+        style: PokemonTextStyles.inter(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700),
+        decoration: InputDecoration(
+          hintText: 'Minimum Rp 10.000',
+          hintStyle: PokemonTextStyles.inter(color: Colors.white24, fontSize: 16),
+          prefixIcon: const Icon(Icons.add_circle_outline, color: Color(0xFFfbbf24)),
+          prefixText: 'Rp ',
+          prefixStyle: PokemonTextStyles.inter(color: const Color(0xFFfbbf24), fontSize: 20, fontWeight: FontWeight.bold),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildConfirmButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 64,
+      child: ElevatedButton(
+        onPressed: _isLoading ? null : _performTopup,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFfbbf24),
+          foregroundColor: Colors.black,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          elevation: 0,
+        ),
+        child: _isLoading 
+          ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.black, strokeWidth: 3))
+          : Text('INITIATE TRANSFER', style: PokemonTextStyles.inter(fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: 1)),
+      ),
+    ).animate(onPlay: (c) => c.repeat(reverse: true)).shimmer(duration: 2.seconds, color: Colors.white.withOpacity(0.2));
+  }
+
+  Widget _buildErrorMessage() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.only(top: 16),
+      child: Row(
+        children: [
+          const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 18),
+          const SizedBox(width: 8),
+          Text(_errorMessage, style: PokemonTextStyles.inter(color: Colors.redAccent, fontSize: 12)),
+        ],
+      ),
+    ).animate().shake();
+  }
+
+  Widget _buildDetailedReceipt() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 32),
+      child: GlassCard(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              const Icon(Icons.verified_user_rounded, color: Color(0xFF10b981), size: 40),
+              const SizedBox(height: 12),
+              Text('TRANSFER SUCCESSFUL', style: PokemonTextStyles.inter(color: const Color(0xFF10b981), fontWeight: FontWeight.w900, fontSize: 16)),
+              const SizedBox(height: 20),
+              _receiptRow('Amount Reloaded', 'Rp ${_formatCurrency(_topupResult!['topup_amount'])}'),
+              _receiptRow('Previous Wallet', 'Rp ${_formatCurrency(_topupResult!['saldo_sebelumnya'])}'),
+              const Divider(color: Colors.white12, height: 32),
+              _receiptRow('New Balance', 'Rp ${_formatCurrency(_topupResult!['saldo_baru'])}', isTotal: true),
+            ],
+          ),
+        ),
+      ),
+    ).animate().fadeIn().scale();
+  }
+
+  Widget _receiptRow(String label, String value, {bool isTotal = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: PokemonTextStyles.inter(
-              color: Colors.white.withOpacity(0.8),
-              fontSize: 14,
+          Text(label, style: PokemonTextStyles.inter(color: isTotal ? Colors.white : Colors.white54, fontSize: isTotal ? 14 : 12, fontWeight: isTotal ? FontWeight.w800 : FontWeight.normal)),
+          Text(value, style: PokemonTextStyles.inter(color: isTotal ? const Color(0xFFfbbf24) : Colors.white, fontSize: isTotal ? 18 : 14, fontWeight: FontWeight.w900)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRecentActivityPreview() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'RECENT ACTIVITIES',
+          style: PokemonTextStyles.inter(
+            color: Colors.white24,
+            fontSize: 11,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 2,
+          ),
+        ),
+        const SizedBox(height: 16),
+        _activityTile('Top Up Wallet', '+ Rp 100.000', 'Today, 10:42', Colors.greenAccent),
+        _activityTile('Purchase Pack', '- Rp 25.000', 'Yesterday, 18:20', Colors.redAccent),
+      ],
+    );
+  }
+
+  Widget _activityTile(String title, String amount, String time, Color color) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+            child: Icon(amount.startsWith('+') ? Icons.add_circle_outline : Icons.shopping_bag_outlined, color: color, size: 20),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: PokemonTextStyles.inter(color: Colors.white, fontWeight: FontWeight.w600)),
+                Text(time, style: PokemonTextStyles.inter(color: Colors.white38, fontSize: 11)),
+              ],
             ),
           ),
-          Text(
-            value,
-            style: PokemonTextStyles.inter(
-              color: Colors.white,
-              fontSize: isBold ? 16 : 14,
-              fontWeight: isBold ? FontWeight.w700 : FontWeight.w600,
-            ),
-          ),
+          Text(amount, style: PokemonTextStyles.inter(color: color, fontWeight: FontWeight.w800, fontSize: 13)),
         ],
       ),
     );

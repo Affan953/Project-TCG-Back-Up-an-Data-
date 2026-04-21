@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tcg_pokemon/config/env.dart';
-import 'package:tcg_pokemon/models/user.dart';
 
 class AuthProvider extends ChangeNotifier {
   bool _isLoading = false;
@@ -19,6 +18,41 @@ class AuthProvider extends ChangeNotifier {
   bool get isLoggedIn => _isLoggedIn;
   String? get token => _token;
   Map<String, dynamic>? get userData => _userData;
+
+  /// Update user data and persist to SharedPreferences
+  Future<void> updateUserData(Map<String, dynamic> newData) async {
+    _userData = {...?_userData, ...newData};
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_data', jsonEncode(_userData));
+    notifyListeners();
+  }
+
+  /// Fetch latest user profile from API
+  Future<void> fetchProfile() async {
+    if (_token == null) return;
+    
+    try {
+      final url = '${Env.baseUrl}/users/profile';
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $_token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        // Backend often returns user inside 'user' or 'data' or 'player'
+        final userData = responseBody['user'] ?? responseBody['data'] ?? responseBody['player'] ?? responseBody;
+        if (userData != null && userData is Map<String, dynamic>) {
+          await updateUserData(userData);
+        }
+      }
+    } catch (e) {
+      debugPrint('[AUTH] Fetch Profile Error: $e');
+    }
+  }
 
   /// Clear any previous error message
   void clearError() {
@@ -155,6 +189,9 @@ class AuthProvider extends ChangeNotifier {
       }
 
       notifyListeners();
+      
+      // Fetch latest profile in background to sync any updates (like balance)
+      fetchProfile();
     }
   }
 

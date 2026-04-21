@@ -8,6 +8,8 @@ class AppRoutes {
   static const String favoritesName = '/favorites';
   static const String settingsName = '/settings';
   static const String topupName = '/topup';
+  static const String myCardsName = '/my-cards';
+  static const String purchaseResultName = '/purchase-result';
 
   static const String loginPath = '/login';
   static const String registerPath = '/register';
@@ -18,4 +20,6 @@ class AppRoutes {
   static const String favoritesPath = '/favorites';
   static const String settingsPath = '/settings';
   static const String topupPath = '/topup';
+  static const String myCardsPath = '/my-cards';
+  static const String purchaseResultPath = '/purchase-result';
 }   

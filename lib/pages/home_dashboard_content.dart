@@ -76,6 +76,9 @@ class _HomeDashboardContentState extends State<HomeDashboardContent> {
       headers: {'Authorization': 'Bearer $token'},
     );
 
+    print(response.statusCode);
+    print(response.body);
+
     if (response.statusCode == 200) {
       final dynamic decodedData = json.decode(response.body);
 
@@ -133,8 +136,8 @@ class _HomeDashboardContentState extends State<HomeDashboardContent> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white),
-            tooltip: 'Logout',
+            icon: const Icon(Icons.settings_outlined, color: Colors.white),
+            tooltip: 'Settings',
             onPressed: () => context.go(AppRoutes.settingsPath),
           ),
         ],
@@ -207,7 +210,7 @@ class _HomeDashboardContentState extends State<HomeDashboardContent> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () => context.go(AppRoutes.favoritesPath),
+                      onTap: () => context.go(AppRoutes.myCardsPath),
                       child: GlassCard(
                         child: Padding(
                           padding: const EdgeInsets.all(16),
@@ -220,7 +223,7 @@ class _HomeDashboardContentState extends State<HomeDashboardContent> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Favorites',
+                                'My Cards',
                                 style: PokemonTextStyles.inter(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -452,7 +455,6 @@ class _HomeDashboardContentState extends State<HomeDashboardContent> {
                                 size: 16,
                               ),
                               onTap: () {
-                                // Navigate to cards page with set ID
                                 context.go('${AppRoutes.cardsPath}?setId=${set.id}');
                               },
                             ),

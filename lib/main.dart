@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:tcg_pokemon/providers/auth_provider.dart';
+import 'package:tcg_pokemon/providers/card_provider.dart';
 import 'routes/app_router.dart';
 
 void main() async {
@@ -10,7 +11,9 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),      ],
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => CardProvider()),
+      ],
       child: MyApp(),
     ),
   );

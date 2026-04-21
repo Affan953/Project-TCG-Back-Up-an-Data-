@@ -10,7 +10,10 @@ import 'package:tcg_pokemon/pages/cards_page.dart';
 import 'package:tcg_pokemon/pages/favorites_page.dart';
 import 'package:tcg_pokemon/pages/settings_page.dart';
 import 'package:tcg_pokemon/pages/topup_page.dart';
+import 'package:tcg_pokemon/pages/my_cards_page.dart';
+import 'package:tcg_pokemon/pages/purchase_result_page.dart';
 import 'package:tcg_pokemon/providers/auth_provider.dart';
+import 'package:tcg_pokemon/providers/card_provider.dart';
 import 'package:tcg_pokemon/routes/app_routes.dart';
 
 bool hasShownLoading = false;
@@ -33,10 +36,9 @@ final GoRouter appRouter = GoRouter(
     }
 
     // Jika belum login dan mencoba akses halaman proteksi, arahkan ke login
-    // BYPASS LOGIN FOR TESTING
-    // if (!isLoggedIn && !isGoingToLogin && !isGoingToRegister && !isGoingToLoading) {
-    //   return AppRoutes.loginPath;
-    // }
+    if (!isLoggedIn && !isGoingToLogin && !isGoingToRegister && !isGoingToLoading) {
+      return AppRoutes.loginPath;
+    }
 
     // Jika sudah login dan mencoba akses login/register, arahkan ke home
     if (isLoggedIn && (isGoingToLogin || isGoingToRegister)) {
@@ -107,6 +109,24 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.topupPath,
       builder: (context, state) {
         return const TopupPage();
+      }
+    ),
+    GoRoute(
+      name: AppRoutes.myCardsName,
+      path: AppRoutes.myCardsPath,
+      builder: (context, state) {
+        return const MyCardsPage();
+      }
+    ),
+    GoRoute(
+      name: AppRoutes.purchaseResultName,
+      path: AppRoutes.purchaseResultPath,
+      builder: (context, state) {
+        final purchaseResult = state.extra as PurchaseResult?;
+        if (purchaseResult == null) {
+          return const ErrorPage();
+        }
+        return PurchaseResultPage(purchaseResult: purchaseResult);
       }
     ),
   ],

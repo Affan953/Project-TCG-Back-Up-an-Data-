@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tcg_pokemon/routes/app_routes.dart';
@@ -34,56 +35,36 @@ class _FavoritesPageState extends State<FavoritesPage> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final favoritesJson = prefs.getString('favorites');
-
       if (favoritesJson != null) {
         final List<dynamic> favoritesData = json.decode(favoritesJson);
         _favorites = favoritesData.map((item) => Map<String, dynamic>.from(item)).toList();
       }
     } catch (e) {
-      setState(() {
-        _error = 'Gagal memuat favorit: $e';
-      });
+      _error = 'Gagal memuat favorit: $e';
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
   }
 
   Future<void> _removeFromFavorites(int index) async {
-    setState(() {
-      _favorites.removeAt(index);
-    });
+    final removedCard = _favorites[index];
+    setState(() => _favorites.removeAt(index));
 
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('favorites', json.encode(_favorites));
-
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Dihapus dari favorit'),
-            backgroundColor: Colors.red.shade700,
+            content: Text('${removedCard['name']} removed from favorites'),
+            backgroundColor: Colors.redAccent,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         );
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal menghapus: $e'),
-            backgroundColor: Colors.red.shade700,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        );
-      }
+      _loadFavorites(); // Revert on failure
     }
   }
 
@@ -94,373 +75,225 @@ class _FavoritesPageState extends State<FavoritesPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        titleSpacing: 0,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'My Favorites',
-              style: PokemonTextStyles.brandLogo(
-                color: Colors.white,
-                fontSize: 22,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Koleksi kartu favorit Anda',
-              style: PokemonTextStyles.inter(
-                color: Colors.white.withOpacity(0.8),
-                fontSize: 14,
-              ),
-            ),
-          ],
+        centerTitle: true,
+        title: Text(
+          'HALL OF FAME',
+          style: PokemonTextStyles.brandLogo(color: Colors.white, fontSize: 18),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+          onPressed: () => context.go(AppRoutes.homePath),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.home, color: Colors.white),
-            tooltip: 'Home',
-            onPressed: () => context.go(AppRoutes.homePath),
+            icon: const Icon(Icons.auto_awesome_rounded, color: Colors.redAccent),
+            onPressed: () {},
           ),
-          IconButton(
-            icon: const Icon(Icons.list, color: Colors.white),
-            tooltip: 'Sets',
-            onPressed: () => context.go(AppRoutes.setsPath),
-          ),
+          const SizedBox(width: 8),
         ],
       ),
       body: PokemonBackground(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
-          child: Column(
-            children: [
-              const SizedBox(height: 104),
-              Expanded(
-                child: _isLoading
-                  ? Center(
-                      child: GlassCard(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 32,
-                            horizontal: 24,
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Loading favorites...',
-                                style: PokemonTextStyles.inter(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(height: 18),
-                              const CircularProgressIndicator(
-                                color: Color(0xFFfbbf24),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  : _error.isNotEmpty
-                    ? Center(
-                        child: GlassCard(
-                          child: Padding(
-                            padding: const EdgeInsets.all(24),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.error_outline,
-                                  color: Colors.red.shade400,
-                                  size: 48,
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  'Oops! Something went wrong',
-                                  style: PokemonTextStyles.inter(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  _error,
-                                  style: PokemonTextStyles.inter(
-                                    color: Colors.white.withOpacity(0.8),
-                                    fontSize: 14,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 20),
-                                ElevatedButton(
-                                  onPressed: _loadFavorites,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFfbbf24),
-                                    foregroundColor: Colors.black,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Coba Lagi',
-                                    style: PokemonTextStyles.inter(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
-                    : _favorites.isEmpty
-                      ? Center(
-                          child: GlassCard(
-                            child: Padding(
-                              padding: const EdgeInsets.all(24),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.favorite_border,
-                                    color: Colors.white.withOpacity(0.6),
-                                    size: 48,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    'Belum ada kartu favorit',
-                                    style: PokemonTextStyles.inter(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'Tambahkan kartu favorit dari halaman kartu',
-                                    style: PokemonTextStyles.inter(
-                                      color: Colors.white.withOpacity(0.8),
-                                      fontSize: 14,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 20),
-                                  ElevatedButton.icon(
-                                    onPressed: () => context.go(AppRoutes.setsPath),
-                                    icon: const Icon(Icons.list),
-                                    label: const Text('Lihat Sets'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFFfbbf24),
-                                      foregroundColor: Colors.black,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      : GridView.builder(
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 0.7,
-                          ),
-                          itemCount: _favorites.length,
-                          itemBuilder: (context, index) {
-                            final favorite = _favorites[index];
-                            return GestureDetector(
-                              onTap: () {
-                                // Show card detail dialog
-                                _showCardDetailDialog(context, favorite, index);
-                              },
-                              child: GlassCard(
-                                child: Stack(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Expanded(
-                                          child: favorite['images']?['small'] != null
-                                            ? Image.network(
-                                                favorite['images']['small'],
-                                                fit: BoxFit.contain,
-                                                errorBuilder: (context, error, stackTrace) =>
-                                                  const Icon(
-                                                    Icons.image_not_supported,
-                                                    color: Colors.white54,
-                                                    size: 60,
-                                                  ),
-                                              )
-                                            : const Icon(
-                                                Icons.image_not_supported,
-                                                color: Colors.white54,
-                                                size: 60,
-                                              ),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Text(
-                                          favorite['name'] ?? 'Unknown',
-                                          style: PokemonTextStyles.inter(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          favorite['hp']?.isNotEmpty == true
-                                            ? 'HP: ${favorite['hp']}'
-                                            : favorite['supertype'] ?? 'Card',
-                                          style: PokemonTextStyles.inter(
-                                            color: Colors.white.withOpacity(0.8),
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Positioned(
-                                      top: 8,
-                                      right: 8,
-                                      child: IconButton(
-                                        onPressed: () => _removeFromFavorites(index),
-                                        icon: const Icon(
-                                          Icons.favorite,
-                                          color: Colors.red,
-                                        ),
-                                        tooltip: 'Hapus dari favorit',
-                                        iconSize: 20,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-              ),
-            ],
-          ),
+        child: Column(
+          children: [
+            const SizedBox(height: 100),
+            _buildFavoritesHeader(),
+            Expanded(
+              child: _isLoading 
+                ? _buildLoadingState() 
+                : _favorites.isEmpty 
+                  ? _buildEmptyState() 
+                  : _buildFavoritesGrid(),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  void _showCardDetailDialog(BuildContext context, Map<String, dynamic> card, int index) {
+  Widget _buildFavoritesHeader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(color: Colors.redAccent.withOpacity(0.1), shape: BoxShape.circle),
+            child: const Icon(Icons.favorite_rounded, color: Colors.redAccent, size: 28),
+          ),
+          const SizedBox(width: 16),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('MY FAVORITES', style: PokemonTextStyles.inter(color: Colors.white30, fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 2)),
+              Text('${_favorites.length} PRIZED CARDS', style: PokemonTextStyles.inter(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w900)),
+            ],
+          ),
+        ],
+      ),
+    ).animate().fadeIn().slideY(begin: -0.1, end: 0);
+  }
+
+  Widget _buildFavoritesGrid() {
+    return GridView.builder(
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 100),
+      physics: const BouncingScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 20,
+        crossAxisSpacing: 20,
+        childAspectRatio: 0.68,
+      ),
+      itemCount: _favorites.length,
+      itemBuilder: (context, index) => _buildFavoriteCard(_favorites[index], index),
+    );
+  }
+
+  Widget _buildFavoriteCard(Map<String, dynamic> card, int index) {
+    return GestureDetector(
+      onTap: () => _showCardDetails(card, index),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(color: Colors.redAccent.withOpacity(0.1), blurRadius: 10, spreadRadius: -2),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Image.network(
+                  card['images']?['small'] ?? '',
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.style_outlined, color: Colors.white10, size: 50),
+                ),
+              ),
+              
+              // Holographic Shimmer
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withOpacity(0.0),
+                        Colors.white.withOpacity(0.08),
+                        Colors.white.withOpacity(0.0),
+                      ],
+                      stops: const [0.45, 0.5, 0.55],
+                    ),
+                  ),
+                ).animate(onPlay: (controller) => controller.repeat())
+                 .shimmer(duration: 2.5.seconds, color: Colors.white.withOpacity(0.12)),
+              ),
+
+              // Favorite Badge
+              Positioned(
+                top: 8,
+                right: 8,
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(color: Colors.black45, borderRadius: BorderRadius.circular(10)),
+                  child: const Icon(Icons.favorite_rounded, color: Colors.redAccent, size: 16),
+                ),
+              ),
+
+              // Name Info
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withOpacity(0.85)]),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(card['name'] ?? 'Unknown', style: PokemonTextStyles.inter(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w900), maxLines: 1),
+                      Text(card['supertype']?.toUpperCase() ?? 'CARD', style: PokemonTextStyles.inter(color: Colors.redAccent, fontSize: 9, fontWeight: FontWeight.w800)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ).animate().fadeIn(delay: (index % 10 * 60).ms).scale(begin: const Offset(0.95, 0.95));
+  }
+
+  void _showCardDetails(Map<String, dynamic> card, int index) {
     showDialog(
       context: context,
       builder: (context) => Dialog(
         backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
         child: GlassCard(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (card['images']?['large'] != null)
-                  Image.network(
-                    card['images']['large'],
-                    height: 300,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) =>
-                      const Icon(
-                        Icons.image_not_supported,
-                        color: Colors.white54,
-                        size: 100,
-                      ),
-                  ),
-                const SizedBox(height: 16),
-                Text(
-                  card['name'] ?? 'Unknown',
-                  style: PokemonTextStyles.inter(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '${card['set']?['name'] ?? 'Unknown Set'} - ${card['number'] ?? ''}',
-                  style: PokemonTextStyles.inter(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 14,
-                  ),
-                ),
-                if (card['hp']?.isNotEmpty == true) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    'HP: ${card['hp']}',
-                    style: PokemonTextStyles.inter(
-                      color: const Color(0xFFfbbf24),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-                if (card['types'] != null && (card['types'] as List).isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    children: (card['types'] as List).map((type) => Chip(
-                      label: Text(
-                        type.toString(),
-                        style: PokemonTextStyles.inter(
-                          color: Colors.black,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      backgroundColor: const Color(0xFFfbbf24),
-                    )).toList(),
-                  ),
-                ],
-                if (card['flavorText']?.isNotEmpty == true) ...[
-                  const SizedBox(height: 16),
-                  Text(
-                    card['flavorText'],
-                    style: PokemonTextStyles.inter(
-                      color: Colors.white.withOpacity(0.9),
-                      fontSize: 14,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
                 const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        _removeFromFavorites(index);
-                        Navigator.of(context).pop();
-                      },
-                      icon: const Icon(Icons.delete),
-                      label: const Text('Hapus'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red.shade600,
-                        foregroundColor: Colors.white,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.network(card['images']?['large'] ?? '', height: 380, fit: BoxFit.contain),
+                ).animate().scale(duration: 400.ms, curve: Curves.easeOutQuart),
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    children: [
+                      Text(card['name'] ?? 'Unknown', style: PokemonTextStyles.inter(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900), textAlign: TextAlign.center),
+                      Text(card['set']?['name'] ?? 'Expansion Unknown', style: PokemonTextStyles.inter(color: Colors.white38, fontSize: 14)),
+                      const SizedBox(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildDetailCol('TYPE', card['types']?.first ?? 'N/A'),
+                          _buildDetailCol('RARITY', card['rarity'] ?? 'Common'),
+                          _buildDetailCol('HP', card['hp'] ?? 'N/A'),
+                        ],
                       ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Tutup'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white.withOpacity(0.2),
-                        foregroundColor: Colors.white,
+                      const SizedBox(height: 32),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                _removeFromFavorites(index);
+                              },
+                              icon: const Icon(Icons.heart_broken_rounded, size: 18),
+                              label: const Text('REMOVE'),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.redAccent,
+                                side: const BorderSide(color: Colors.redAccent),
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () => Navigator.pop(context),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white.withOpacity(0.05),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              ),
+                              child: const Text('CLOSE'),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -469,4 +302,46 @@ class _FavoritesPageState extends State<FavoritesPage> {
       ),
     );
   }
-}
+
+  Widget _buildDetailCol(String label, String val) {
+    return Column(
+      children: [
+        Text(label, style: PokemonTextStyles.inter(color: Colors.white30, fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1)),
+        Text(val, style: PokemonTextStyles.inter(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w900)),
+      ],
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator(color: Colors.redAccent),
+          const SizedBox(height: 16),
+          Text('INVOKING FAVORITES...', style: PokemonTextStyles.inter(color: Colors.white10, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 2)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.favorite_border_rounded, color: Colors.white12, size: 80),
+          const SizedBox(height: 20),
+          Text('EMPTY HALL OF FAME', style: PokemonTextStyles.inter(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w900)),
+          Text('Your most prized cards will appear here.', style: PokemonTextStyles.inter(color: Colors.white38, fontSize: 14)),
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: () => context.go(AppRoutes.myCardsPath),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+            child: const Text('EXPLORE COLLECTION'),
+          ),
+        ],
+      ),
+    );
+  }
+}

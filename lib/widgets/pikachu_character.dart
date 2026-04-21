@@ -95,6 +95,13 @@ class _SmoothPikachu extends StatelessWidget {
       width: size,
       height: size,
       fit: BoxFit.contain,
+      errorBuilder: (context, error, stackTrace) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.bolt_rounded, color: Color(0xFFfbbf24), size: 60),
+          Text('PIKA!', style: TextStyle(color: const Color(0xFFfbbf24).withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 10)),
+        ],
+      ),
     );
 
     // 2. Continuous Idle Layer (Breathing + Small Wobble)

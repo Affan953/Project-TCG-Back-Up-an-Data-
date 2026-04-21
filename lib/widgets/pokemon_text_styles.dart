@@ -29,12 +29,14 @@ class PokemonTextStyles {
     Color color = Colors.white,
     double fontSize = 14,
     FontWeight fontWeight = FontWeight.w400,
+    double? letterSpacing,
   }) {
     return GoogleFonts.inter(
       textStyle: TextStyle(
         fontSize: fontSize,
         color: color,
         fontWeight: fontWeight,
+        letterSpacing: letterSpacing,
       ),
     );
   }

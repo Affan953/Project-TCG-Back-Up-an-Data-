@@ -76,36 +76,6 @@ class _PokemonTcgRegisterAppState extends State<PokemonTcgRegisterApp> {
     });
   }
 
-  Future<void> _submitRegistration(BuildContext context) async {
-    if (_nameController.text.isEmpty ||
-        _emailController.text.isEmpty ||
-        _passwordController.text.isEmpty ||
-        _confirmController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Semua field harus diisi.')),
-      );
-      return;
-    }
-
-    final authProvider = context.read<AuthProvider>();
-    final success = await authProvider.register(
-      username: _nameController.text.trim(),
-      email: _emailController.text.trim(),
-      password: _passwordController.text,
-      confirmPassword: _confirmController.text,
-    );
-
-    // if (success) {
-    //   context.goNamed(AppRoutes.loginName);
-    //   return;
-    // }
-
-    final message = authProvider.errorMessage ?? 'Registrasi gagal. Coba lagi.';
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
-
   Future<void> _handleRegister() async {
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
